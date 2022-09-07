@@ -24,6 +24,14 @@ app.use(function(err,req,res,next){
     res.status(err.status || 500).send({error: "Algo se rompió"})
 });
 
+app.use(function(req,res,next){
+    const msj ={
+        error: 404,
+        descripcion:`Not found. Ruta: ${req.baseUrl}${req.url} || Método: ${req.method} No implementada.`
+    };
+    res.status(404).send(msj)
+});
+
 /******Servidor******/
 const port = 8080;
 app.listen(port, ()=>{

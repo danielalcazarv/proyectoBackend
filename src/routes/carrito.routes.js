@@ -11,12 +11,13 @@ async function middlewareGetCartId (req,res,next){
     let id = Number(req.params.id);
     const cart = await carritos.getById(id);
     if (cart==null){
-        const msj = {msg:'Carrito de Usuario no encontrado'};
-        return res.send(msj);
+        const msj = {
+            error:404,
+            descripcion:`Not found. Carrito de Usuario no encontrado. Ruta: ${req.baseUrl}${req.url} || Método: ${req.method}`};
+        res.status(404).json(msj);
     }else{
-        console.log("OK");
+        next();
     }
-    next();
 };
 
 //Valida si el carrito tiene productos
@@ -25,12 +26,13 @@ async function middlewareGetCartProdNotFound (req,res,next){
     const cart = await carritos.getById(id);
     const index = cart.productos.findIndex(x=>x.id);
     if (index == -1){
-        const msj = {ms:"Su carrito esta vacio. Por favor seleccione unos productos."};
-        return res.send(msj);
+        const msj = {
+            error:404,
+            descripcion:`Not found. Carrito de Usuario vacio. Ruta: ${req.baseUrl}${req.url} || Método: ${req.method}`};
+        res.status(404).json(msj);
     }else{
-        console.log("OK");
+        next();
     }
-    next();
 };
 
 //Valida si el producto existe en db
@@ -38,12 +40,13 @@ async function middlewareProdNotFound (req,res,next){
     let id = Number(req.body.id);
     const prod= await productos.getById(id);
     if (prod==null){
-        const msj = {msg:'Producto no encontrado, intente nuevamente'};
-        return res.send(msj);
+        const msj = {
+            error:404,
+            descripcion:`Not found. Producto inexsistente. Ruta: ${req.baseUrl}/${req.body.id} || Método: ${req.method}`};
+        res.status(404).json(msj);
     }else{
-        console.log("OK");
+        next();
     }
-    next();
 };
 
 /******Rutas******/

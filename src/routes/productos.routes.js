@@ -11,25 +11,25 @@ async function middlewareGetIdNotFound (req,res,next){
     let id = Number(req.params.id);
     const prod = await productos.getById(id);
     if (prod==null){
-        const msj = {msg:'Producto no encontrado'};
-        return res.send(msj);
+        const msj = {
+            error:404,
+            descripcion:`Not found. El producto no existe. Ruta: ${req.baseUrl}${req.url} || Método: ${req.method}`};
+        res.status(404).json(msj);
     }else{
-        console.log("OK");
+        next();
     }
-    next();
 };
 
 function middlewareAdminValid (req, res, next){
     if(!ADM){
         const msj = {
-            error: -1,
-            descripcion:`Ruta http://localhost:8080/api/productos/${req.params.id} No autorizada.`
+            error: 403,
+            descripcion:`Forbidden Access. Require permisos de admin. Ruta: ${req.baseUrl}${req.url} || Método: ${req.method} No autorizado.`
         };
-        return res.send(msj);
+        res.status(403).json(msj);
     }else{
-        console.log('ADM LOGGED');
+        next();
     }
-    next();
 };
 
 /******Rutas******/
@@ -50,17 +50,17 @@ routerProductos.post('/', middlewareAdminValid, (req,res)=>{
     res.status(200).json({msg:'Producto Agregado', data: req.body});
 });
 
-routerProductos.delete('/:id', middlewareAdminValid, (req,res)=>{
+routerProductos.delete('/:id', middlewareAdminValid, middlewareGetIdNotFound, (req,res)=>{
     let id = Number(req.params.id);
     productos.deleteById(id);
     res.status(200).json({msg:'Producto Borrado'});
 })
 
-routerProductos.put('/:id', middlewareAdminValid, (req, res)=>{
+routerProductos.put('/:id', middlewareAdminValid, middlewareGetIdNotFound, (req, res)=>{
     let id = Number(req.params.id);
     let obj = req.body;
     productos.update(id,obj);
-    res.status(200).json({msg:'Producto Actualizado', new:{...req.body}});
+    res.status(201).json({msg:'Producto Actualizado', new:{...req.body}});
 });
 
 module.exports = routerProductos;
