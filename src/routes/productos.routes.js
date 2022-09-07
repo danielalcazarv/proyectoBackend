@@ -1,7 +1,7 @@
 /******Modulos******/
 const express = require ('express');
 const Contenedor = require('../models/contenedor.js');
-const productos = new Contenedor('./src/models/productos.json');
+const productos = new Contenedor('./src/db/productos.json');
 
 const routerProductos = express.Router();
 const ADM = true;
@@ -30,7 +30,7 @@ function middlewareAdminValid (req, res, next){
         console.log('ADM LOGGED');
     }
     next();
-}
+};
 
 /******Rutas******/
 routerProductos.get('/', async (req,res)=>{

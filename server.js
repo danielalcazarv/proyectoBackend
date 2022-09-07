@@ -16,7 +16,7 @@ app.use(morgan('dev'));
 
 /******Rutas******/
 app.use('/api/productos', routerProductos);
-//app.use('/api/carrito', routerCarritos);
+app.use('/api/carrito', routerCarritos);
 
 //Errores globales
 app.use(function(err,req,res,next){

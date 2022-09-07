@@ -17,7 +17,7 @@ class Contenedor {
             }
         }
         catch (error){
-            console.log('Error al leer archivo. No se encontraron los productos. Tipo de error: ' + error);
+            console.log('Error al leer archivo. Tipo de error: ' + error);
         }
     };
 
@@ -35,10 +35,10 @@ class Contenedor {
         const objsJson = JSON.stringify(objsCollection);
         try {
             await fs.promises.writeFile(this.archivo,objsJson);
-            console.log("Producto guardado.");
+            console.log("Guardado exitosamente!.");
         }
         catch (error){
-            console.log("Error al guardar el producto. Tipo de error: "+ error);
+            console.log("Error al guardar. Tipo de error: "+ error);
         }
     };
 
@@ -51,12 +51,11 @@ class Contenedor {
                 const notFound = null;
                 return notFound;
             }else{
-                console.log(idFiltrado);
                 return idFiltrado;
             }
         }
         catch (error){
-            console.log('Error al leer archivo. No se encontró producto. Tipo de error: ' + error);
+            console.log('No se encontró id. Tipo de error: ' + error);
         }
     };
 
@@ -69,33 +68,35 @@ class Contenedor {
             console.log("Producto eliminado.");
         }
         catch(error){
-            console.log('Error al leer archivo. No se pudo eliminar el producto. Tipo de error: ' + error);
+            console.log('No se pudo eliminar id. Tipo de error: ' + error);
         }
-    }
+    };
 
     async deleteAll (){
         try{
             const arrVacio = "";
             await fs.promises.writeFile(this.archivo,arrVacio);
-            console.log("Todos los productos fueron eliminados");
+            console.log("Se eliminó todo el contenido exitosamente!");
         }
         catch(error){
             console.log(error);
         }
-    }
+    };
 
     async update (id,obj){
         const objsCollection = await this.getAll();
         const objsCollectionFiltrado = objsCollection.filter(obj => obj.id!=id);
-        const newProducto = {id:id, ...obj};
+        const objTargetId = objsCollection.filter(obj => obj.id==id);
+        const timestamp = objTargetId[0].timestamp;
+        const newProducto = {id:id,timestamp:timestamp, ...obj};
         objsCollectionFiltrado.push(newProducto);
         const objsJson = JSON.stringify(objsCollectionFiltrado);
         try {
             await fs.promises.writeFile(this.archivo,objsJson);
-            console.log("Producto actualizado.");
+            console.log("Contenido actualizado.");
         }
         catch (error){
-            console.log("Error al actualizar el producto. Tipo de error: "+ error);
+            console.log("Error al actualizar. Tipo de error: "+ error);
         }
     };
 };
